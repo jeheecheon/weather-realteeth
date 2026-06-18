@@ -1,0 +1,161 @@
+@theme {
+  --font-sans:
+    "Roboto", "Noto Sans KR", system-ui, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo",
+    "Malgun Gothic", sans-serif;
+  --font-mono: "Roboto Mono", "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --color-*: initial;
+
+  --color-primary: #00a4c5;
+  --color-primary-hover: #0097b5;
+  --color-primary-pressed: #008aa5;
+  --color-primary-disabled: #c6e6ed;
+  --color-primary-soft: #eaf5f6;
+  --color-on-primary: #ffffff;
+
+  --color-canvas: #ffffff;
+  --color-page: #f4f8fb;
+  --color-surface-soft: #f4f8fb;
+  --color-surface-strong: #edf2f6;
+  --color-surface-pressed: #e3eaef;
+
+  --color-hairline: #dfe6eb;
+  --color-hairline-soft: #eef2f5;
+  --color-hairline-strong: #c7d1d8;
+
+  --color-ink: #202c33;
+  --color-body: #4c606a;
+  --color-meta: #778d98;
+  --color-meta-soft: #92a5af;
+  --color-on-ink: #ffffff;
+
+  --color-scrim: #000000;
+
+  --color-semantic-success: #2f9e44;
+  --color-semantic-success-soft: #e7f2e4;
+  --color-semantic-warning: #ccac00;
+  --color-semantic-warning-soft: #fff7cc;
+  --color-semantic-warning-text: #8a7300;
+  --color-semantic-error: #c24a4a;
+  --color-semantic-error-soft: #fcdede;
+  --color-semantic-error-strong: #f25c5c;
+
+  --text-display-xl: 32px;
+  --text-display-xl--line-height: 1.3;
+  --text-display-xl--letter-spacing: 0;
+  --text-display-xl--font-weight: 700;
+
+  --text-display-lg: 26px;
+  --text-display-lg--line-height: 1.35;
+  --text-display-lg--letter-spacing: 0;
+  --text-display-lg--font-weight: 700;
+
+  --text-display-md: 20px;
+  --text-display-md--line-height: 1.4;
+  --text-display-md--letter-spacing: 0;
+  --text-display-md--font-weight: 700;
+
+  --text-display-sm: 18px;
+  --text-display-sm--line-height: 1.45;
+  --text-display-sm--letter-spacing: 0;
+  --text-display-sm--font-weight: 700;
+
+  --text-title-md: 16px;
+  --text-title-md--line-height: 1.45;
+  --text-title-md--letter-spacing: 0;
+  --text-title-md--font-weight: 500;
+
+  --text-title-sm: 14px;
+  --text-title-sm--line-height: 1.45;
+  --text-title-sm--letter-spacing: 0;
+  --text-title-sm--font-weight: 500;
+
+  --text-body-lg: 18px;
+  --text-body-lg--line-height: 1.65;
+  --text-body-lg--letter-spacing: 0;
+  --text-body-lg--font-weight: 400;
+
+  --text-body-md: 16px;
+  --text-body-md--line-height: 1.6;
+  --text-body-md--letter-spacing: 0;
+  --text-body-md--font-weight: 400;
+
+  --text-body-sm: 14px;
+  --text-body-sm--line-height: 1.55;
+  --text-body-sm--letter-spacing: 0;
+  --text-body-sm--font-weight: 400;
+
+  --text-caption: 13px;
+  --text-caption--line-height: 1.4;
+  --text-caption--letter-spacing: 0;
+  --text-caption--font-weight: 400;
+
+  --text-micro: 11px;
+  --text-micro--line-height: 1.3;
+  --text-micro--letter-spacing: 0.4px;
+  --text-micro--font-weight: 700;
+
+  --text-button-md: 15px;
+  --text-button-md--line-height: 1.25;
+  --text-button-md--letter-spacing: 0;
+  --text-button-md--font-weight: 500;
+
+  --text-button-sm: 14px;
+  --text-button-sm--line-height: 1.25;
+  --text-button-sm--letter-spacing: 0;
+  --text-button-sm--font-weight: 500;
+
+  --text-nav-md: 16px;
+  --text-nav-md--line-height: 1.3;
+  --text-nav-md--letter-spacing: 0;
+  --text-nav-md--font-weight: 500;
+
+  --text-nav-sm: 14px;
+  --text-nav-sm--line-height: 1.35;
+  --text-nav-sm--letter-spacing: 0;
+  --text-nav-sm--font-weight: 400;
+
+  --text-temp-hero: 64px;
+  --text-temp-hero--line-height: 1;
+  --text-temp-hero--letter-spacing: -1px;
+  --text-temp-hero--font-weight: 400;
+
+  --text-temp-lg: 32px;
+  --text-temp-lg--line-height: 1.05;
+  --text-temp-lg--letter-spacing: -0.5px;
+  --text-temp-lg--font-weight: 500;
+
+  --text-temp-md: 20px;
+  --text-temp-md--line-height: 1.1;
+  --text-temp-md--letter-spacing: 0;
+  --text-temp-md--font-weight: 500;
+
+  --text-temp-sm: 15px;
+  --text-temp-sm--line-height: 1.2;
+  --text-temp-sm--letter-spacing: 0.2px;
+  --text-temp-sm--font-weight: 500;
+
+  --text-num-mono: 12px;
+  --text-num-mono--line-height: 1.4;
+  --text-num-mono--letter-spacing: 0.2px;
+  --text-num-mono--font-weight: 500;
+
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+
+  --spacing-2xs: 4px;
+  --spacing-xs: 8px;
+  --spacing-sm: 12px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 48px;
+  --spacing-section: 64px;
+
+  --shadow-raised: 0 1px 2px 0 rgb(0 0 0 / 0.04), 0 2px 6px 0 rgb(0 0 0 / 0.05);
+  --shadow-hover: 0 2px 6px 0 rgb(0 0 0 / 0.04), 0 4px 12px 0 rgb(0 0 0 / 0.08);
+  --shadow-floating: 0 4px 10px 0 rgb(0 0 0 / 0.06), 0 12px 24px 0 rgb(0 0 0 / 0.1);
+}

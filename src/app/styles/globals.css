@@ -1,7 +1,12 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "./theme.css";
 
 @layer base {
+  body {
+    @apply bg-page font-sans text-ink antialiased;
+  }
+
   button:not(:disabled):hover,
   [role="button"]:not(:disabled):hover {
     @apply cursor-pointer;
