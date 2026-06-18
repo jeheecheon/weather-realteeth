@@ -1,5 +1,3 @@
-"use client";
-
 import { getQueryClient } from "@/shared/api";
 import { QueryClientProvider as _QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";

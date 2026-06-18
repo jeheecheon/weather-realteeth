@@ -8,12 +8,8 @@
 # testing
 /coverage
 
-# next.js
-/.next/
-/out/
-
-# production
-/build
+# build output
+/dist
 
 # misc
 .DS_Store
@@ -34,10 +30,6 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
-next-env.d.ts
-
-# generated message bundles (source of truth in messages/src/*.yml)
-/messages/*.json
 
 # Claude
 .claude

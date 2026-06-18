@@ -1,8 +1,11 @@
-import nextVitals from "eslint-config-next/core-web-vitals";
-import nextTs from "eslint-config-next/typescript";
+import js from "@eslint/js";
 import perfectionist from "eslint-plugin-perfectionist";
 import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
+import reactHooks from "eslint-plugin-react-hooks";
+import reactRefresh from "eslint-plugin-react-refresh";
 import { defineConfig, globalIgnores } from "eslint/config";
+import globals from "globals";
+import tseslint from "typescript-eslint";
 
 const buildPropOrderingOptions = (multilineSelector) => {
   const customGroups = [
@@ -39,12 +42,18 @@ const buildPropOrderingOptions = (multilineSelector) => {
 };
 
 const eslintConfig = defineConfig([
-  ...nextVitals,
-  ...nextTs,
+  js.configs.recommended,
+  ...tseslint.configs.recommended,
   eslintPluginPrettierRecommended,
   {
-    plugins: { perfectionist },
+    languageOptions: {
+      ecmaVersion: 2022,
+      globals: globals.browser,
+    },
+    plugins: { perfectionist, "react-hooks": reactHooks, "react-refresh": reactRefresh },
     rules: {
+      ...reactHooks.configs.recommended.rules,
+      "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
       "perfectionist/sort-jsx-props": ["error", buildPropOrderingOptions("prop")],
       "perfectionist/sort-object-types": ["error", buildPropOrderingOptions("property")],
       "perfectionist/sort-objects": [
@@ -75,19 +84,6 @@ const eslintConfig = defineConfig([
       "no-restricted-imports": [
         "error",
         {
-          paths: [
-            {
-              name: "next/link",
-              message:
-                "Use the locale-aware 'Link' from '@/shared/i18n' so the active locale prefix is preserved.",
-            },
-            {
-              name: "next/navigation",
-              importNames: ["redirect", "permanentRedirect", "useRouter", "usePathname"],
-              message:
-                "Use the locale-aware navigation from '@/shared/i18n'. (notFound/useSearchParams/useParams are fine from 'next/navigation'.)",
-            },
-          ],
           patterns: [
             {
               group: [
@@ -111,15 +107,7 @@ const eslintConfig = defineConfig([
       ],
     },
   },
-  globalIgnores([
-    // INFO: Default ignores of eslint-config-next:
-    ".next/**",
-    "out/**",
-    "build/**",
-    "next-env.d.ts",
-    "**/*.gen.ts",
-    "**/*.gen.schemas.ts",
-  ]),
+  globalIgnores(["dist/**", "**/*.gen.ts", "**/*.gen.schemas.ts"]),
 ]);
 
 export default eslintConfig;
