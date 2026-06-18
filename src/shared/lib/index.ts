@@ -1,3 +1,4 @@
+export { assert, ensure, type AssertionError } from "./assert";
 export { cn } from "./class-name";
 export { isBrowser } from "./dom";
 export type { Maybe, Nullable, Optional } from "./nullish";
