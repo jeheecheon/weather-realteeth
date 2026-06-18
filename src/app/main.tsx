@@ -1,8 +1,7 @@
+import { HomePage } from "@/pages/home";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { RouterProvider } from "react-router";
 import { GlobalProvider } from "./providers";
-import { router } from "./router";
 import "./styles";
 
 const root = document.getElementById("root");
@@ -13,7 +12,7 @@ if (!root) {
 createRoot(root).render(
   <StrictMode>
     <GlobalProvider>
-      <RouterProvider router={router} />
+      <HomePage />
     </GlobalProvider>
   </StrictMode>,
 );
