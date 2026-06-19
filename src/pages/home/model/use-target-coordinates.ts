@@ -1,14 +1,25 @@
 import { A_SECOND, type Nullable } from "@/shared/lib";
-import { useMemo } from "react";
-import { useGeolocation } from "react-use";
+import { useEffect, useMemo } from "react";
+import { toast } from "react-hot-toast";
 import type { District } from "./district";
+import { useGeolocation } from "./use-geolocation";
 import type { Coordinates } from "./weather";
 
-const GEOLOCATION_TIMEOUT = 3 * A_SECOND;
 const SEOUL_COORDINATES: Coordinates = { lat: 37.5665, lon: 126.978 };
 
 export function useTargetCoordinates(district: Nullable<District>): Nullable<Coordinates> {
-  const geolocation = useGeolocation({ timeout: GEOLOCATION_TIMEOUT });
+  const geolocation = useGeolocation();
+
+  useEffect(() => {
+    if (!geolocation.error) {
+      return;
+    }
+
+    toast.error("현재 위치를 확인할 수 없어요.\n위치 권한을 허용한 뒤 다시 시도해 주세요.", {
+      id: "geolocation-error",
+      duration: 5 * A_SECOND,
+    });
+  }, [geolocation.error]);
 
   return useMemo<Nullable<Coordinates>>(() => {
     if (district) {
