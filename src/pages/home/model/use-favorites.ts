@@ -11,18 +11,23 @@ export const MAX_FAVORITES = 6;
 
 const FAVORITES_STORAGE_KEY = "favorites";
 
-const defaultSeoulDistrict = ensure(
+const seoulDistrict = ensure(
   districts.find((candidate) => candidate.name === "서울특별시"),
   "Default favorite district not found: 서울특별시",
 );
-const defaultBusanDistrict = ensure(
+const busanDistrict = ensure(
   districts.find((candidate) => candidate.name === "부산광역시"),
   "Default favorite district not found: 부산광역시",
 );
+const daeguDistrict = ensure(
+  districts.find((candidate) => candidate.name === "대구광역시"),
+  "Default favorite district not found: 대구광역시",
+);
 
 const DEFAULT_FAVORITES: Favorite[] = [
-  { ...defaultSeoulDistrict, alias: null },
-  { ...defaultBusanDistrict, alias: null },
+  { ...seoulDistrict, alias: null },
+  { ...busanDistrict, alias: null },
+  { ...daeguDistrict, alias: null },
 ];
 
 export function useFavorites() {
