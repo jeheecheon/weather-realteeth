@@ -1,6 +1,5 @@
 import { cn, type Nullable } from "@/shared/lib";
-import { Button, Skeleton } from "@/shared/ui";
-import { PanelLeftIcon, StarIcon } from "lucide-react";
+import { Skeleton } from "@/shared/ui";
 import { useMemo } from "react";
 import { useWeather } from "../api/use-weather";
 import { resolveWeatherCondition } from "../lib/weather-code";
@@ -8,6 +7,8 @@ import type { District } from "../model/district";
 import { useCurrentDistrict } from "../model/use-current-district";
 import { MAX_FAVORITES, useFavorites } from "../model/use-favorites";
 import type { Coordinates } from "../model/weather";
+import { WeatherBackground } from "./weather-background";
+import { WeatherDetailHeader } from "./weather-detail-header";
 import { HourlyForecastTile, WeatherMetricTiles, WeeklyForecastTile } from "./weather-tiles";
 
 type WeatherDetailProps = {
@@ -44,7 +45,8 @@ export function WeatherDetail({
 
   return (
     <main className={cn("flex flex-col gap-xl pb-xl", className)}>
-      <WeatherBackdrop
+      <WeatherBackground
+        className="fixed inset-0 z-0 overflow-hidden"
         isDay={weather.data.current.isDay}
         weatherCode={weather.data.current.weatherCode}
       />
@@ -65,8 +67,17 @@ export function WeatherDetail({
           <span className="text-title-md text-body">{condition.label}</span>
         </div>
         <div className="flex gap-md">
-          <TemperatureLabel label="최고" value={weather.data.today.max} />
-          <TemperatureLabel label="최저" value={weather.data.today.min} muted />
+          {[
+            { label: "최고", value: weather.data.today.max, muted: false },
+            { label: "최저", value: weather.data.today.min, muted: true },
+          ].map(({ label, value, muted }) => (
+            <span key={label} className="inline-flex items-baseline gap-2xs">
+              <span className="text-title-sm text-meta">{label}</span>
+              <span className={cn("text-temp-sm", muted ? "text-meta" : "text-ink")}>
+                {Math.round(value)}°
+              </span>
+            </span>
+          ))}
         </div>
       </section>
 
@@ -84,102 +95,6 @@ export function WeatherDetail({
   function handleFavoriteToggle() {
     toggleFavorite({ ...district, alias: null });
   }
-}
-
-type WeatherBackdropProps = {
-  className?: string;
-  isDay: boolean;
-  weatherCode: number;
-};
-
-function WeatherBackdrop({ className, isDay, weatherCode }: WeatherBackdropProps) {
-  return (
-    <div
-      className={cn("pointer-events-none fixed inset-0 z-0 overflow-hidden bg-page", className)}
-      aria-hidden="true"
-    >
-      <div
-        className={cn(
-          "absolute inset-x-0 top-0 h-[68dvh] bg-gradient-to-b to-transparent transition-colors duration-700",
-          resolveWeatherBackdropClassName(weatherCode, isDay),
-        )}
-      />
-      <div className="absolute inset-0 bg-gradient-to-b from-canvas/10 via-page/25 to-page" />
-      <div className="absolute inset-x-0 top-0 h-[15dvh] bg-gradient-to-b from-canvas/55 to-canvas/0" />
-    </div>
-  );
-}
-
-function resolveWeatherBackdropClassName(weatherCode: number, isDay: boolean): string {
-  if (!isDay) {
-    return "from-backdrop-night/70 via-backdrop-night/30";
-  }
-
-  if (weatherCode === 0) {
-    return "from-backdrop-clear/90 via-backdrop-clear/35";
-  }
-
-  if ([1, 2, 3].includes(weatherCode)) {
-    return "from-backdrop-cloudy/90 via-backdrop-cloudy/35";
-  }
-
-  if ([45, 48].includes(weatherCode)) {
-    return "from-backdrop-fog/95 via-backdrop-fog/40";
-  }
-
-  if ([51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82].includes(weatherCode)) {
-    return "from-backdrop-rain/85 via-backdrop-rain/35";
-  }
-
-  if ([71, 73, 75, 77, 85, 86].includes(weatherCode)) {
-    return "from-backdrop-snow/95 via-backdrop-snow/45";
-  }
-
-  if ([95, 96, 99].includes(weatherCode)) {
-    return "from-backdrop-thunder/80 via-backdrop-thunder/35";
-  }
-
-  return "from-backdrop-cloudy/80 via-backdrop-cloudy/30";
-}
-
-type WeatherDetailHeaderProps = {
-  className?: string;
-  isFavorite: boolean;
-  isFavoriteToggleDisabled: boolean;
-  onFavoritePanelToggle: () => void;
-  onFavoriteToggle: () => void;
-};
-
-function WeatherDetailHeader({
-  className,
-  isFavorite,
-  isFavoriteToggleDisabled,
-  onFavoritePanelToggle,
-  onFavoriteToggle,
-}: WeatherDetailHeaderProps) {
-  return (
-    <div className={cn("flex items-center justify-between gap-md", className)}>
-      <div className="flex items-center gap-xs">
-        <Button
-          size="icon"
-          variant="secondary"
-          aria-label="사이드바 토글"
-          onClick={onFavoritePanelToggle}
-        >
-          <PanelLeftIcon />
-        </Button>
-        <Button
-          size="icon"
-          variant={isFavorite ? "default" : "secondary"}
-          disabled={isFavoriteToggleDisabled}
-          aria-label={isFavorite ? "즐겨찾기 삭제" : "즐겨찾기 추가"}
-          onClick={onFavoriteToggle}
-        >
-          <StarIcon className={cn(isFavorite && "fill-current")} />
-        </Button>
-      </div>
-    </div>
-  );
 }
 
 type WeatherDetailSkeletonProps = {
@@ -219,49 +134,11 @@ type WeatherDetailErrorProps = {
 
 export function WeatherDetailError({ className }: WeatherDetailErrorProps) {
   return (
-    <main className={cn("flex min-h-[480px] flex-col gap-lg", className)}>
-      <WeatherMessage
-        title="날씨 정보를 가져오지 못했습니다."
-        description="잠시 후 다시 시도해 주세요."
-      />
+    <main className={cn("flex flex-1 items-center justify-center py-section", className)}>
+      <div className="flex flex-col items-center gap-xs rounded-lg border border-hairline-soft bg-surface-soft p-2xl text-center">
+        <h1 className="text-display-md text-ink">날씨 정보를 가져오지 못했습니다.</h1>
+        <p className="text-body-md text-meta">잠시 후 다시 시도해 주세요.</p>
+      </div>
     </main>
-  );
-}
-
-type WeatherMessageProps = {
-  className?: string;
-  description: string;
-  title: string;
-};
-
-function WeatherMessage({ className, description, title }: WeatherMessageProps) {
-  return (
-    <div
-      className={cn(
-        "flex min-h-80 flex-1 flex-col items-center justify-center gap-xs text-center",
-        className,
-      )}
-    >
-      <h1 className="text-display-md text-ink">{title}</h1>
-      <p className="max-w-md text-body-sm text-meta">{description}</p>
-    </div>
-  );
-}
-
-type TemperatureLabelProps = {
-  className?: string;
-  label: string;
-  muted?: boolean;
-  value: number;
-};
-
-function TemperatureLabel({ className, label, muted = false, value }: TemperatureLabelProps) {
-  return (
-    <span className={cn("inline-flex items-baseline gap-2xs", className)}>
-      <span className="text-title-sm text-meta">{label}</span>
-      <span className={cn("text-temp-sm", muted ? "text-meta" : "text-ink")}>
-        {Math.round(value)}°
-      </span>
-    </span>
   );
 }
