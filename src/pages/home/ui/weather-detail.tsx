@@ -1,6 +1,6 @@
 import { cn, type Nullable } from "@/shared/lib";
 import { Button, Skeleton } from "@/shared/ui";
-import { LocateFixedIcon, PanelLeftIcon, StarIcon } from "lucide-react";
+import { PanelLeftIcon, StarIcon } from "lucide-react";
 import { useMemo } from "react";
 import { useWeather } from "../api/use-weather";
 import { resolveWeatherCondition } from "../lib/weather-code";
@@ -51,7 +51,6 @@ export function WeatherDetail({
 
       <WeatherDetailHeader
         className="relative z-10"
-        activeDistrict={activeDistrict}
         isFavorite={isFavorite}
         isFavoriteToggleDisabled={!isFavorite && favorites.length >= MAX_FAVORITES}
         onFavoritePanelToggle={onFavoritePanelToggle}
@@ -59,7 +58,6 @@ export function WeatherDetail({
       />
 
       <section className="relative z-10 flex flex-col items-center gap-xs text-center">
-        <p className="text-title-sm text-meta">{activeDistrict ? "선택한 장소" : "감지된 위치"}</p>
         <h1 className="text-display-xl text-ink">{placeName}</h1>
         <p className="text-temp-hero text-ink">{Math.round(weather.data.current.temperature)}°</p>
         <div className="flex items-center gap-xs">
@@ -146,7 +144,6 @@ function resolveWeatherBackdropClassName(weatherCode: number, isDay: boolean): s
 
 type WeatherDetailHeaderProps = {
   className?: string;
-  activeDistrict: Nullable<District>;
   isFavorite: boolean;
   isFavoriteToggleDisabled: boolean;
   onFavoritePanelToggle: () => void;
@@ -155,7 +152,6 @@ type WeatherDetailHeaderProps = {
 
 function WeatherDetailHeader({
   className,
-  activeDistrict,
   isFavorite,
   isFavoriteToggleDisabled,
   onFavoritePanelToggle,
@@ -182,12 +178,6 @@ function WeatherDetailHeader({
           <StarIcon className={cn(isFavorite && "fill-current")} />
         </Button>
       </div>
-      {!activeDistrict && (
-        <span className="inline-flex items-center gap-2xs text-caption text-meta">
-          <LocateFixedIcon className="size-[16px]" />
-          현재 위치 기준
-        </span>
-      )}
     </div>
   );
 }
