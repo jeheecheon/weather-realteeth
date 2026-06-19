@@ -1,4 +1,6 @@
 @theme {
+  --breakpoint-desktop: 48rem;
+
   --font-sans:
     "Roboto Variable", "Noto Sans KR Variable", system-ui, -apple-system, BlinkMacSystemFont,
     "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
