@@ -16,6 +16,14 @@ To expose styling for a non-outermost child element, declare an additional optio
 
 When `{ComponentName}Props` (§ 1.1.) needs `children`, type it via `PropsWithChildren` from `react`; do not declare `children: ReactNode` manually. Import the symbol directly (`import { PropsWithChildren } from "react"`); the namespaced form `React.PropsWithChildren` is forbidden.
 
+## 1.5. Prop handler functions
+
+When a function passed to a child component as a prop adds behavior of its own — transforming or binding arguments, calling extra logic, or running side effects beyond a single delegated call — it MUST be a locally named handler with a `handle` prefix (e.g. `handleEditSheetClose`, `handleRemoveFavorite`).
+
+Do NOT create a handler that only forwards its arguments to a single function (e.g. `(favorite) => addFavorite(favorite)`). Pass the underlying function directly as the prop instead — this covers pass-through props, hook-returned functions, and state setters.
+
+Declare each handler with the `function` keyword (a function declaration, not an arrow-function `const`) and place the declarations AFTER the component's `return` statement, relying on hoisting. A single handler MAY be reused across multiple props when their behavior is identical.
+
 # 2. UI Component Sourcing
 
 ## 2.1. shadcn precedence
