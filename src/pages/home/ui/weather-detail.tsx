@@ -5,7 +5,7 @@ import { useWeather } from "../api/use-weather";
 import { resolveWeatherCondition } from "../lib/weather-code";
 import type { District } from "../model/district";
 import { useCurrentDistrict } from "../model/use-current-district";
-import { MAX_FAVORITES, useFavorites } from "../model/use-favorites";
+import { useFavorites } from "../model/use-favorites";
 import type { Coordinates } from "../model/weather";
 import { WeatherBackground } from "./weather-background";
 import { WeatherDetailHeader } from "./weather-detail-header";
@@ -44,52 +44,59 @@ export function WeatherDetail({
   const placeName = favorite?.alias ?? district.name;
 
   return (
-    <main className={cn("flex flex-col gap-xl pb-xl", className)}>
+    <>
       <WeatherBackground
-        className="fixed inset-0 z-0 overflow-hidden"
+        className="fixed inset-0 overflow-hidden"
         isDay={weather.data.current.isDay}
         weatherCode={weather.data.current.weatherCode}
       />
 
-      <WeatherDetailHeader
-        className="relative z-10"
-        isFavorite={isFavorite}
-        isFavoriteToggleDisabled={!isFavorite && favorites.length >= MAX_FAVORITES}
-        onFavoritePanelToggle={onFavoritePanelToggle}
-        onFavoriteToggle={handleFavoriteToggle}
-      />
-
-      <section className="relative z-10 flex flex-col items-center gap-xs text-center">
-        <h1 className="text-display-xl text-ink">{placeName}</h1>
-        <p className="text-temp-hero text-ink">{Math.round(weather.data.current.temperature)}°</p>
-        <div className="flex items-center gap-xs">
-          <condition.Icon className="size-6 text-ink" />
-          <span className="text-title-md text-body">{condition.label}</span>
-        </div>
-        <div className="flex gap-md">
-          {[
-            { label: "최고", value: weather.data.today.max, muted: false },
-            { label: "최저", value: weather.data.today.min, muted: true },
-          ].map(({ label, value, muted }) => (
-            <span key={label} className="inline-flex items-baseline gap-2xs">
-              <span className="text-title-sm text-meta">{label}</span>
-              <span className={cn("text-temp-sm", muted ? "text-meta" : "text-ink")}>
-                {Math.round(value)}°
-              </span>
-            </span>
-          ))}
-        </div>
-      </section>
-
-      <div className="relative z-10 grid grid-cols-2 gap-md md:grid-cols-3">
-        <HourlyForecastTile className="col-span-2 md:col-span-3" hourly={hourlyForecast} />
-        <WeeklyForecastTile
-          className="col-span-2 md:col-span-1 md:row-span-4"
-          daily={weather.data.daily}
+      <main
+        className={cn(
+          "flex flex-col gap-xl pb-xl",
+          "animate-in duration-500 ease-out fade-in",
+          className,
+        )}
+      >
+        <WeatherDetailHeader
+          className="relative z-10"
+          isFavorite={isFavorite}
+          onFavoritePanelToggle={onFavoritePanelToggle}
+          onFavoriteToggle={handleFavoriteToggle}
         />
-        <WeatherMetricTiles current={weather.data.current} today={weather.data.today} />
-      </div>
-    </main>
+
+        <section className="relative z-10 flex flex-col items-center gap-xs text-center">
+          <h1 className="text-display-md text-ink md:text-display-xl">{placeName}</h1>
+          <p className="text-temp-hero text-ink">{Math.round(weather.data.current.temperature)}°</p>
+          <div className="flex items-center gap-xs">
+            <condition.Icon className="size-6 text-ink" />
+            <span className="text-title-md text-body">{condition.label}</span>
+          </div>
+          <div className="flex gap-md">
+            {[
+              { label: "최고", value: weather.data.today.max, muted: false },
+              { label: "최저", value: weather.data.today.min, muted: true },
+            ].map(({ label, value, muted }) => (
+              <span key={label} className="inline-flex items-baseline gap-2xs">
+                <span className="text-title-sm text-meta">{label}</span>
+                <span className={cn("text-temp-sm", muted ? "text-meta" : "text-ink")}>
+                  {Math.round(value)}°
+                </span>
+              </span>
+            ))}
+          </div>
+        </section>
+
+        <div className="relative z-10 grid grid-cols-2 gap-md md:grid-cols-3">
+          <HourlyForecastTile className="col-span-2 md:col-span-3" hourly={hourlyForecast} />
+          <WeeklyForecastTile
+            className="col-span-2 md:col-span-1 md:row-span-4"
+            daily={weather.data.daily}
+          />
+          <WeatherMetricTiles current={weather.data.current} today={weather.data.today} />
+        </div>
+      </main>
+    </>
   );
 
   function handleFavoriteToggle() {
@@ -105,23 +112,24 @@ export function WeatherDetailSkeleton({ className }: WeatherDetailSkeletonProps)
   return (
     <div className={cn("flex flex-col gap-xl pb-xl", className)}>
       <div className="flex items-center justify-between gap-md">
-        <Skeleton className="size-10 rounded-md" />
-        <Skeleton className="h-5 w-28 rounded-md" />
+        <div className="flex items-center gap-xs">
+          <Skeleton className="size-9 rounded-full" />
+          <Skeleton className="size-9 rounded-full" />
+        </div>
       </div>
 
       <div className="flex flex-col items-center gap-xs">
-        <Skeleton className="h-5 w-20 rounded-md" />
-        <Skeleton className="h-10 w-44 rounded-md" />
+        <Skeleton className="h-7 w-40 rounded-md md:h-10 md:w-56" />
         <Skeleton className="h-16 w-32 rounded-md" />
-        <Skeleton className="h-6 w-24 rounded-md" />
-        <Skeleton className="h-6 w-40 rounded-md" />
+        <Skeleton className="h-6 w-28 rounded-md" />
+        <Skeleton className="h-5 w-36 rounded-md" />
       </div>
 
       <div className="grid grid-cols-2 gap-md md:grid-cols-3">
-        <Skeleton className="col-span-2 h-32 rounded-lg md:col-span-3" />
-        <Skeleton className="col-span-2 h-80 rounded-lg md:col-span-1 md:row-span-4" />
+        <Skeleton className="col-span-2 h-48 rounded-lg md:col-span-3" />
+        <Skeleton className="col-span-2 h-64 rounded-lg md:col-span-1 md:row-span-4 md:h-auto" />
         {Array.from({ length: 8 }).map((_, index) => (
-          <Skeleton key={index} className="h-24 rounded-lg" />
+          <Skeleton key={index} className="h-28 rounded-lg" />
         ))}
       </div>
     </div>
