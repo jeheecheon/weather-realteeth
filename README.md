@@ -5,7 +5,7 @@
 1. `pnpm install && pnpm dev`
 2. [http://localhost:5173](http://localhost:5173) 접속
 
-배포된 웹앱: [https://weather.jeheecheon.com](https://weather.jeheecheon.com)
+데모 URL: [https://weather.jeheecheon.com](https://weather.jeheecheon.com)
 
 ---
 
