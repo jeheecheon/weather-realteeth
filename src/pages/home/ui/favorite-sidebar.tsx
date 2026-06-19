@@ -9,25 +9,25 @@ import { FavoriteSearchCombobox } from "./favorite-search-combobox";
 
 type FavoriteSidebarProps = {
   className?: string;
-  activeFavorite: Nullable<Favorite>;
+  activeDistrict: Nullable<District>;
   isOpen: boolean;
-  onActiveFavoriteChange: (favorite: Nullable<Favorite>) => void;
+  onActiveDistrictChange: (district: Nullable<District>) => void;
 };
 
 export function FavoriteSidebar({
   className,
-  activeFavorite,
+  activeDistrict,
   isOpen,
-  onActiveFavoriteChange,
+  onActiveDistrictChange,
 }: FavoriteSidebarProps) {
   const { favorites, removeFavorite, updateFavorite } = useFavorites();
   const [editingFavorite, setEditingFavorite] = useState<Optional<Favorite>>();
 
   useEffect(() => {
-    if (!activeFavorite && favorites[0]) {
-      onActiveFavoriteChange(favorites[0]);
+    if (!activeDistrict && favorites[0]) {
+      onActiveDistrictChange(favorites[0]);
     }
-  }, [activeFavorite, favorites, onActiveFavoriteChange]);
+  }, [activeDistrict, favorites, onActiveDistrictChange]);
 
   return (
     <aside
@@ -37,13 +37,13 @@ export function FavoriteSidebar({
         isOpen ? "desktop:flex" : "desktop:hidden",
       )}
     >
-      <FavoriteSearchCombobox onSelectDistrict={handleSelectDistrict} />
+      <FavoriteSearchCombobox onSelectDistrict={onActiveDistrictChange} />
 
       <FavoriteList
-        activeFavorite={activeFavorite}
+        activeDistrict={activeDistrict}
         favorites={favorites}
         onEditFavorite={setEditingFavorite}
-        onSelectFavorite={onActiveFavoriteChange}
+        onSelectFavorite={onActiveDistrictChange}
       />
 
       <Modal isOpen={editingFavorite != null} title="즐겨찾기 편집" onClose={handleEditDialogClose}>
@@ -59,12 +59,6 @@ export function FavoriteSidebar({
     </aside>
   );
 
-  function handleSelectDistrict(district: District) {
-    onActiveFavoriteChange(
-      favorites.find((favorite) => favorite.name === district.name) ?? { ...district, alias: null },
-    );
-  }
-
   function handleEditDialogClose() {
     setEditingFavorite(undefined);
   }
@@ -72,16 +66,16 @@ export function FavoriteSidebar({
   function handleRemoveEditedFavorite(favorite: Favorite) {
     removeFavorite(favorite);
 
-    if (favorite.name === activeFavorite?.name) {
-      onActiveFavoriteChange(favorites.find((item) => item.name !== favorite.name) ?? null);
+    if (favorite.name === activeDistrict?.name) {
+      onActiveDistrictChange(favorites.find((item) => item.name !== favorite.name) ?? null);
     }
   }
 
   function handleUpdateEditedFavorite(favorite: Favorite) {
     updateFavorite(favorite);
 
-    if (favorite.name === activeFavorite?.name) {
-      onActiveFavoriteChange(favorite);
+    if (favorite.name === activeDistrict?.name) {
+      onActiveDistrictChange(favorite);
     }
   }
 }

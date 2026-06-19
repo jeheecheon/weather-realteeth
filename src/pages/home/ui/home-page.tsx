@@ -1,11 +1,13 @@
 import { cn, type Nullable } from "@/shared/lib";
 import { Container } from "@/shared/ui";
-import { useState } from "react";
+import { Suspense, useState } from "react";
+import { ErrorBoundary } from "react-error-boundary";
 import { useDesktopBreakpoint } from "../lib/use-desktop-breakpoint";
-import type { Favorite } from "../model/use-favorites";
+import type { District } from "../model/district";
+import { useActiveCoordinates } from "../model/use-active-coordinates";
 import { FavoriteFullscreenModal } from "./favorite-fullscreen-modal";
 import { FavoriteSidebar } from "./favorite-sidebar";
-import { WeatherDetail } from "./weather-detail";
+import { WeatherDetail, WeatherDetailError, WeatherDetailSkeleton } from "./weather-detail";
 
 type HomePageProps = {
   className?: string;
@@ -13,8 +15,9 @@ type HomePageProps = {
 
 export function HomePage({ className }: HomePageProps) {
   const [isFavoritesPanelOpen, setIsFavoritesPanelOpen] = useState(true);
-  const [activeFavorite, setActiveFavorite] = useState<Nullable<Favorite>>(null);
+  const [activeDistrict, setActiveDistrict] = useState<Nullable<District>>(null);
   const isDesktop = useDesktopBreakpoint();
+  const coordinates = useActiveCoordinates(activeDistrict);
 
   useDesktopBreakpoint({ onChange: setIsFavoritesPanelOpen });
 
@@ -23,30 +26,42 @@ export function HomePage({ className }: HomePageProps) {
       <Container className="flex gap-lg">
         <FavoriteSidebar
           className={cn("w-72 shrink-0", !isDesktop && "hidden")}
-          activeFavorite={activeFavorite}
+          activeDistrict={activeDistrict}
           isOpen={isFavoritesPanelOpen}
-          onActiveFavoriteChange={handleActiveFavoriteChange}
+          onActiveDistrictChange={handleActiveDistrictChange}
         />
-        <WeatherDetail
-          className="min-w-0 flex-1"
-          favorite={activeFavorite}
-          onToggleFavorites={handleIsFavoritesPanelOpenChange(!isFavoritesPanelOpen)}
-        />
+        {coordinates == null ? (
+          <WeatherDetailSkeleton className="min-w-0 flex-1" />
+        ) : (
+          <ErrorBoundary
+            resetKeys={[coordinates.lat, coordinates.lon]}
+            fallback={<WeatherDetailError className="min-w-0 flex-1" />}
+          >
+            <Suspense fallback={<WeatherDetailSkeleton className="min-w-0 flex-1" />}>
+              <WeatherDetail
+                className="min-w-0 flex-1"
+                coordinates={coordinates}
+                district={activeDistrict}
+                onToggleFavorites={handleIsFavoritesPanelOpenChange(!isFavoritesPanelOpen)}
+              />
+            </Suspense>
+          </ErrorBoundary>
+        )}
       </Container>
 
       {!isDesktop && (
         <FavoriteFullscreenModal
-          activeFavorite={activeFavorite}
+          activeDistrict={activeDistrict}
           isOpen={isFavoritesPanelOpen}
-          onActiveFavoriteChange={handleActiveFavoriteChange}
+          onActiveDistrictChange={handleActiveDistrictChange}
           onClose={handleIsFavoritesPanelOpenChange(false)}
         />
       )}
     </div>
   );
 
-  function handleActiveFavoriteChange(favorite: Nullable<Favorite>) {
-    setActiveFavorite(favorite);
+  function handleActiveDistrictChange(district: Nullable<District>) {
+    setActiveDistrict(district);
     if (isDesktop) {
       return;
     }

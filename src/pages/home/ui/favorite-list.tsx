@@ -1,13 +1,14 @@
 import { cn, type Nullable } from "@/shared/lib";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
+import type { District } from "../model/district";
 import type { Favorite } from "../model/use-favorites";
 import { MAX_FAVORITES } from "../model/use-favorites";
 import { FavoriteCard, FavoriteCardError, FavoriteCardSkeleton } from "./favorite-card";
 
 type FavoriteListProps = {
   className?: string;
-  activeFavorite: Nullable<Favorite>;
+  activeDistrict: Nullable<District>;
   favorites: Favorite[];
   onEditFavorite: (favorite: Favorite) => void;
   onSelectFavorite: (favorite: Favorite) => void;
@@ -15,7 +16,7 @@ type FavoriteListProps = {
 
 export function FavoriteList({
   className,
-  activeFavorite,
+  activeDistrict,
   favorites,
   onEditFavorite,
   onSelectFavorite,
@@ -29,7 +30,7 @@ export function FavoriteList({
       <div className="flex min-h-0 flex-1 flex-col gap-sm overflow-auto pr-xs">
         {favorites.length > 0 ? (
           favorites.map((favorite) => {
-            const isSelected = favorite.name === activeFavorite?.name;
+            const isSelected = favorite.name === activeDistrict?.name;
 
             return (
               <ErrorBoundary

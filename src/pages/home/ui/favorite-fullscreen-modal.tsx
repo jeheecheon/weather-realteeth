@@ -11,17 +11,17 @@ import { FavoriteSearchPanelTrigger } from "./favorite-search-panel-trigger";
 
 type FavoriteFullscreenModalProps = {
   className?: string;
-  activeFavorite: Nullable<Favorite>;
+  activeDistrict: Nullable<District>;
   isOpen: boolean;
-  onActiveFavoriteChange: (favorite: Nullable<Favorite>) => void;
+  onActiveDistrictChange: (district: Nullable<District>) => void;
   onClose: () => void;
 };
 
 export function FavoriteFullscreenModal({
   className,
-  activeFavorite,
+  activeDistrict,
   isOpen,
-  onActiveFavoriteChange,
+  onActiveDistrictChange,
   onClose,
 }: FavoriteFullscreenModalProps) {
   const [isEditOpen, setIsEditOpen] = useState<boolean>(false);
@@ -32,16 +32,16 @@ export function FavoriteFullscreenModal({
   return (
     <FullscreenModal className={className} isOpen={isOpen} title="즐겨찾기" onClose={onClose}>
       {isDesktop ? (
-        <FavoriteSearchCombobox onSelectDistrict={handleSelectDistrict} />
+        <FavoriteSearchCombobox onSelectDistrict={onActiveDistrictChange} />
       ) : (
-        <FavoriteSearchPanelTrigger onSelectDistrict={handleSelectDistrict} />
+        <FavoriteSearchPanelTrigger onSelectDistrict={onActiveDistrictChange} />
       )}
 
       <FavoriteList
-        activeFavorite={activeFavorite}
+        activeDistrict={activeDistrict}
         favorites={favorites}
         onEditFavorite={handleEditFavorite}
-        onSelectFavorite={onActiveFavoriteChange}
+        onSelectFavorite={onActiveDistrictChange}
       />
 
       {editingFavorite && (
@@ -57,12 +57,6 @@ export function FavoriteFullscreenModal({
     </FullscreenModal>
   );
 
-  function handleSelectDistrict(district: District) {
-    onActiveFavoriteChange(
-      favorites.find((favorite) => favorite.name === district.name) ?? { ...district, alias: null },
-    );
-  }
-
   function handleEditFavorite(favorite: Favorite) {
     setIsEditOpen(true);
     setEditingFavorite(favorite);
@@ -75,17 +69,17 @@ export function FavoriteFullscreenModal({
   function handleRemoveFavorite(favorite: Favorite) {
     removeFavorite(favorite);
 
-    if (activeFavorite?.name === favorite.name) {
+    if (activeDistrict?.name === favorite.name) {
       const next = favorites.find((item) => item.name !== favorite.name) ?? null;
-      onActiveFavoriteChange(next);
+      onActiveDistrictChange(next);
     }
   }
 
   function handleUpdateFavorite(favorite: Favorite) {
     updateFavorite(favorite);
 
-    if (activeFavorite?.name === favorite.name) {
-      onActiveFavoriteChange(favorite);
+    if (activeDistrict?.name === favorite.name) {
+      onActiveDistrictChange(favorite);
     }
   }
 }

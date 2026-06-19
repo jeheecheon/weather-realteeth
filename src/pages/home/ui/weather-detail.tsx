@@ -1,132 +1,169 @@
-import { cn, type Maybe, type Nullable } from "@/shared/lib";
-import { Button } from "@/shared/ui";
+import { cn, type Nullable } from "@/shared/lib";
+import { Button, Skeleton } from "@/shared/ui";
 import { LocateFixedIcon, PanelLeftIcon } from "lucide-react";
-import { Suspense, useMemo } from "react";
-import { ErrorBoundary } from "react-error-boundary";
-import { useGeolocation } from "react-use";
+import { useMemo } from "react";
 import { useWeather } from "../api/use-weather";
 import { resolveWeatherCondition } from "../lib/weather-code";
-import type { Favorite } from "../model/use-favorites";
+import type { District } from "../model/district";
+import { useFavorites } from "../model/use-favorites";
 import type { Coordinates, HourlyWeather } from "../model/weather";
 
 type WeatherDetailProps = {
   className?: string;
-  favorite: Nullable<Favorite>;
+  coordinates: Coordinates;
+  district: Nullable<District>;
   onToggleFavorites: () => void;
 };
 
 const HOURLY_FORECAST_LIMIT = 12;
 
-export function WeatherDetail({ className, favorite, onToggleFavorites }: WeatherDetailProps) {
-  const geolocation = useGeolocation();
-
-  const geolocationCoordinates: Maybe<Coordinates> =
-    geolocation.latitude != null && geolocation.longitude != null
-      ? { lat: geolocation.latitude, lon: geolocation.longitude }
-      : undefined;
-  const coordinates: Maybe<Coordinates> = favorite
-    ? { lat: favorite.lat, lon: favorite.lon }
-    : geolocationCoordinates;
-
-  return (
-    <main className={cn("flex min-h-[720px] flex-col gap-lg", className)}>
-      <div className="flex items-center justify-between gap-md">
-        <Button
-          className="hidden desktop:inline-flex"
-          size="icon"
-          variant="secondary"
-          aria-label="사이드바 토글"
-          onClick={onToggleFavorites}
-        >
-          <PanelLeftIcon />
-        </Button>
-        <Button
-          className="desktop:hidden"
-          size="icon"
-          variant="secondary"
-          aria-label="즐겨찾기 열기"
-          onClick={onToggleFavorites}
-        >
-          <PanelLeftIcon />
-        </Button>
-        {!favorite && (
-          <span className="inline-flex items-center gap-2xs text-caption text-meta">
-            <LocateFixedIcon className="size-[16px]" />
-            현재 위치 기준
-          </span>
-        )}
-      </div>
-
-      <section className="flex flex-1 flex-col gap-xl rounded-xl border border-hairline bg-canvas p-lg shadow-raised md:p-xl">
-        {coordinates == null ? (
-          <WeatherMessage title="로딩 중..." description="현재 위치의 날씨를 불러오고 있습니다." />
-        ) : (
-          <ErrorBoundary
-            resetKeys={[coordinates.lat, coordinates.lon]}
-            fallback={
-              <WeatherMessage
-                title="날씨 정보를 가져오지 못했습니다."
-                description="잠시 후 다시 시도해 주세요."
-              />
-            }
-          >
-            <Suspense
-              fallback={
-                <WeatherMessage
-                  title="날씨 정보 불러오는 중"
-                  description="최신 예보를 확인하고 있습니다."
-                />
-              }
-            >
-              <WeatherDetailContent coordinates={coordinates} favorite={favorite} />
-            </Suspense>
-          </ErrorBoundary>
-        )}
-      </section>
-    </main>
-  );
-}
-
-type WeatherDetailContentProps = {
-  className?: string;
-  coordinates: Coordinates;
-  favorite: Nullable<Favorite>;
-};
-
-function WeatherDetailContent({ className, coordinates, favorite }: WeatherDetailContentProps) {
+export function WeatherDetail({
+  className,
+  coordinates,
+  district,
+  onToggleFavorites,
+}: WeatherDetailProps) {
   const weather = useWeather(coordinates);
+  const { favorites } = useFavorites();
   const condition = resolveWeatherCondition(weather.data);
   const hourlyForecast = useMemo(
     () => weather.data.hourly.slice(0, HOURLY_FORECAST_LIMIT),
     [weather.data],
   );
-  const placeName = favorite ? (favorite.alias ?? favorite.name) : "현재 위치";
+  const favorite = district ? favorites.find((item) => item.name === district.name) : undefined;
+  const placeName = favorite?.alias ?? district?.name ?? "현재 위치";
 
   return (
-    <div className={cn("flex flex-1 flex-col gap-xl", className)}>
-      <div className="flex flex-col gap-lg md:flex-row md:items-start md:justify-between">
-        <div className="flex flex-col gap-sm">
-          <div>
-            <p className="text-title-sm text-meta">{favorite ? "선택한 장소" : "감지된 위치"}</p>
-            <h1 className="mt-2xs text-display-xl text-ink">{placeName}</h1>
+    <main className={cn("flex min-h-[720px] flex-col gap-lg", className)}>
+      <WeatherDetailHeader district={district} onToggleFavorites={onToggleFavorites} />
+
+      <section className="flex flex-1 flex-col gap-xl rounded-xl border border-hairline bg-canvas p-lg shadow-raised md:p-xl">
+        <div className="flex flex-1 flex-col gap-xl">
+          <div className="flex flex-col gap-lg md:flex-row md:items-start md:justify-between">
+            <div className="flex flex-col gap-sm">
+              <div>
+                <p className="text-title-sm text-meta">
+                  {district ? "선택한 장소" : "감지된 위치"}
+                </p>
+                <h1 className="mt-2xs text-display-xl text-ink">{placeName}</h1>
+              </div>
+              <div className="flex items-center gap-md">
+                <condition.Icon className="size-10 text-ink" />
+                <span className="text-title-md text-body">{condition.label}</span>
+              </div>
+            </div>
+
+            <div className="flex flex-col items-start gap-sm md:items-end">
+              <p className="text-temp-hero text-ink">
+                {Math.round(weather.data.current.temperature)}°
+              </p>
+              <div className="flex gap-md">
+                <TemperatureLabel label="최고" value={weather.data.daily.max} />
+                <TemperatureLabel label="최저" value={weather.data.daily.min} muted />
+              </div>
+            </div>
           </div>
-          <div className="flex items-center gap-md">
-            <condition.Icon className="size-10 text-ink" />
-            <span className="text-title-md text-body">{condition.label}</span>
+
+          <HourlyForecast hourlyForecast={hourlyForecast} />
+        </div>
+      </section>
+    </main>
+  );
+}
+
+type WeatherDetailHeaderProps = {
+  className?: string;
+  district: Nullable<District>;
+  onToggleFavorites: () => void;
+};
+
+function WeatherDetailHeader({ className, district, onToggleFavorites }: WeatherDetailHeaderProps) {
+  return (
+    <div className={cn("flex items-center justify-between gap-md", className)}>
+      <Button
+        className="hidden desktop:inline-flex"
+        size="icon"
+        variant="secondary"
+        aria-label="사이드바 토글"
+        onClick={onToggleFavorites}
+      >
+        <PanelLeftIcon />
+      </Button>
+      <Button
+        className="desktop:hidden"
+        size="icon"
+        variant="secondary"
+        aria-label="즐겨찾기 열기"
+        onClick={onToggleFavorites}
+      >
+        <PanelLeftIcon />
+      </Button>
+      {!district && (
+        <span className="inline-flex items-center gap-2xs text-caption text-meta">
+          <LocateFixedIcon className="size-[16px]" />
+          현재 위치 기준
+        </span>
+      )}
+    </div>
+  );
+}
+
+type WeatherDetailSkeletonProps = {
+  className?: string;
+};
+
+export function WeatherDetailSkeleton({ className }: WeatherDetailSkeletonProps) {
+  return (
+    <div className={cn("flex min-h-[720px] flex-col gap-lg", className)}>
+      <div className="flex items-center justify-between gap-md">
+        <Skeleton className="size-10 rounded-md" />
+        <Skeleton className="h-5 w-28 rounded-md" />
+      </div>
+
+      <div className="flex flex-1 flex-col gap-xl rounded-xl border border-hairline bg-canvas p-lg shadow-raised md:p-xl">
+        <div className="flex flex-col gap-lg md:flex-row md:items-start md:justify-between">
+          <div className="flex flex-col gap-sm">
+            <Skeleton className="h-5 w-20 rounded-md" />
+            <Skeleton className="h-12 w-48 rounded-md" />
+            <div className="flex items-center gap-md">
+              <Skeleton className="size-10 rounded-full" />
+              <Skeleton className="h-6 w-24 rounded-md" />
+            </div>
+          </div>
+
+          <div className="flex flex-col items-start gap-sm md:items-end">
+            <Skeleton className="h-20 w-32 rounded-md" />
+            <Skeleton className="h-6 w-40 rounded-md" />
           </div>
         </div>
 
-        <div className="flex flex-col items-start gap-sm md:items-end">
-          <p className="text-temp-hero text-ink">{Math.round(weather.data.current.temperature)}°</p>
-          <div className="flex gap-md">
-            <TemperatureLabel label="최고" value={weather.data.daily.max} />
-            <TemperatureLabel label="최저" value={weather.data.daily.min} muted />
+        <div className="flex flex-col gap-md">
+          <Skeleton className="h-8 w-32 rounded-md" />
+          <div className="flex gap-sm overflow-hidden rounded-lg border border-hairline bg-surface-soft p-sm">
+            {Array.from({ length: HOURLY_FORECAST_LIMIT }).map((_, index) => (
+              <Skeleton key={index} className="h-24 w-20 shrink-0 rounded-md" />
+            ))}
           </div>
         </div>
       </div>
-
-      <HourlyForecast hourlyForecast={hourlyForecast} />
     </div>
+  );
+}
+
+type WeatherDetailErrorProps = {
+  className?: string;
+};
+
+export function WeatherDetailError({ className }: WeatherDetailErrorProps) {
+  return (
+    <main className={cn("flex min-h-[720px] flex-col gap-lg", className)}>
+      <section className="flex flex-1 flex-col gap-xl rounded-xl border border-hairline bg-canvas p-lg shadow-raised md:p-xl">
+        <WeatherMessage
+          title="날씨 정보를 가져오지 못했습니다."
+          description="잠시 후 다시 시도해 주세요."
+        />
+      </section>
+    </main>
   );
 }
 
