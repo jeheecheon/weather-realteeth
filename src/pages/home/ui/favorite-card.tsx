@@ -1,6 +1,6 @@
 import { cn } from "@/shared/lib";
 import { Skeleton } from "@/shared/ui";
-import { PencilIcon } from "lucide-react";
+import { SettingsIcon } from "lucide-react";
 import { useWeather } from "../api/use-weather";
 import { resolveWeatherCondition } from "../lib/weather-code";
 import type { Favorite } from "../model/use-favorites";
@@ -136,14 +136,14 @@ function FavoriteCardEditButton({ className, favorite, onEdit }: FavoriteCardEdi
   return (
     <button
       className={cn(
-        "absolute top-sm right-sm inline-flex size-9 items-center justify-center rounded-full bg-surface-soft text-ink transition-colors outline-none hover:bg-surface-strong focus-visible:ring-2 focus-visible:ring-primary active:bg-surface-pressed",
+        "absolute top-sm right-sm inline-flex size-9 items-center justify-center rounded-full bg-surface-soft text-ink transition-colors outline-none hover:bg-canvas focus-visible:bg-canvas focus-visible:ring-2 focus-visible:ring-primary active:bg-surface-pressed",
         className,
       )}
       type="button"
-      aria-label={`${favorite.alias ?? favorite.name} 편집`}
+      aria-label={`${favorite.alias ?? favorite.name} 설정`}
       onClick={onEdit}
     >
-      <PencilIcon className="size-4.5" />
+      <SettingsIcon className="size-3.5" />
     </button>
   );
 }

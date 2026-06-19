@@ -38,6 +38,7 @@ export function FavoriteFullscreenModal({
       )}
 
       <FavoriteList
+        className="mt-md"
         activeDistrict={activeDistrict}
         favorites={favorites}
         onEditFavorite={handleEditFavorite}
