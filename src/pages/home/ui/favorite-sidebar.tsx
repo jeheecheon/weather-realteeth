@@ -10,14 +10,12 @@ import { FavoriteSearchCombobox } from "./favorite-search-combobox";
 type FavoriteSidebarProps = {
   className?: string;
   activeDistrict: Nullable<District>;
-  isOpen: boolean;
   onActiveDistrictChange: (district: Nullable<District>) => void;
 };
 
 export function FavoriteSidebar({
   className,
   activeDistrict,
-  isOpen,
   onActiveDistrictChange,
 }: FavoriteSidebarProps) {
   const { favorites, removeFavorite, updateFavorite } = useFavorites();
@@ -32,9 +30,8 @@ export function FavoriteSidebar({
   return (
     <aside
       className={cn(
-        "h-full min-h-0 flex-col gap-md",
+        "flex min-h-0 flex-col gap-md rounded-lg border border-hairline bg-canvas p-md shadow-raised",
         className,
-        isOpen ? "desktop:flex" : "desktop:hidden",
       )}
     >
       <FavoriteSearchCombobox onSelectDistrict={onActiveDistrictChange} />

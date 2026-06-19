@@ -1,5 +1,4 @@
 import { cn, type Nullable } from "@/shared/lib";
-import { Container } from "@/shared/ui";
 import { Suspense, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { useDesktopBreakpoint } from "../lib/use-desktop-breakpoint";
@@ -19,35 +18,44 @@ export function HomePage({ className }: HomePageProps) {
   const isDesktop = useDesktopBreakpoint();
   const coordinates = useActiveCoordinates(activeDistrict);
 
+  const isSidebarOpen = isDesktop && isFavoritesPanelOpen;
+
   useDesktopBreakpoint({ onChange: setIsFavoritesPanelOpen });
 
   return (
-    <div className={cn("min-h-dvh bg-page py-lg md:py-xl", className)}>
-      <Container className="flex gap-lg">
-        <FavoriteSidebar
-          className={cn("w-72 shrink-0", !isDesktop && "hidden")}
-          activeDistrict={activeDistrict}
-          isOpen={isFavoritesPanelOpen}
-          onActiveDistrictChange={handleActiveDistrictChange}
-        />
-        {coordinates == null ? (
-          <WeatherDetailSkeleton className="min-w-0 flex-1" />
-        ) : (
-          <ErrorBoundary
-            resetKeys={[coordinates.lat, coordinates.lon]}
-            fallback={<WeatherDetailError className="min-w-0 flex-1" />}
-          >
-            <Suspense fallback={<WeatherDetailSkeleton className="min-w-0 flex-1" />}>
-              <WeatherDetail
-                className="min-w-0 flex-1"
-                coordinates={coordinates}
-                district={activeDistrict}
-                onToggleFavorites={handleIsFavoritesPanelOpenChange(!isFavoritesPanelOpen)}
-              />
-            </Suspense>
-          </ErrorBoundary>
+    <div className={cn("h-dvh min-h-dvh bg-page py-lg md:py-xl", className)}>
+      <div
+        className={cn(
+          "grid h-full gap-lg px-md transition-[grid-template-columns] duration-100 ease-in-out md:px-xl",
+          isSidebarOpen ? "grid-cols-[18rem_1fr]" : "grid-cols-[0rem_1fr]",
         )}
-      </Container>
+      >
+        <div className="min-w-0 overflow-hidden">
+          <FavoriteSidebar
+            className="h-full w-72"
+            activeDistrict={activeDistrict}
+            onActiveDistrictChange={handleActiveDistrictChange}
+          />
+        </div>
+        <div className="mx-auto h-full w-full max-w-3xl min-w-0">
+          {coordinates == null ? (
+            <WeatherDetailSkeleton />
+          ) : (
+            <ErrorBoundary
+              resetKeys={[coordinates.lat, coordinates.lon]}
+              fallback={<WeatherDetailError />}
+            >
+              <Suspense fallback={<WeatherDetailSkeleton />}>
+                <WeatherDetail
+                  coordinates={coordinates}
+                  district={activeDistrict}
+                  onToggleFavorites={handleIsFavoritesPanelOpenChange(!isFavoritesPanelOpen)}
+                />
+              </Suspense>
+            </ErrorBoundary>
+          )}
+        </div>
+      </div>
 
       {!isDesktop && (
         <FavoriteFullscreenModal

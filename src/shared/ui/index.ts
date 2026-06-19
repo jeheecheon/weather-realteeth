@@ -8,7 +8,6 @@ export {
   ComboboxItem,
   ComboboxList,
 } from "./combobox";
-export { Container } from "./container";
 export {
   Dialog,
   DialogClose,

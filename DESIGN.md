@@ -139,12 +139,12 @@ No status hue is promoted to a second brand accent — severe-weather and alert 
 
 The surface ladder is closed at four tiers. Each tier maps to one role; mixing roles across tiers is forbidden.
 
-| Tier              | Hex     | Role                                                                                                | Example                                                          |
-| ----------------- | ------- | --------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
-| `canvas`          | #ffffff | Component floor. Resting fill for components that sit directly on the page.                         | card body, `text-input` rest, `button-secondary` rest            |
-| `surface-soft`    | #f4f8fb | Default raised surface. Resting fill for chip-style controls and static raised regions.             | `icon-button-circle` rest, `search-input` rest                   |
-| `surface-strong`  | #edf2f6 | `:hover` escalation for chip-style controls. Static fixed-emphasis fill with no further escalation. | `icon-button-circle` hover, `search-input` hover, skeleton block |
-| `surface-pressed` | #e3eaef | `:active` (held-down) escalation. Ladder ceiling.                                                   | `icon-button-circle` active, `button-ghost` active               |
+| Tier              | Hex     | Role                                                                                                | Example                                                                               |
+| ----------------- | ------- | --------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| `canvas`          | #ffffff | Component floor. Resting fill for components that sit directly on the page.                         | sidebar panel & hourly-card body, `text-input` rest, `button-secondary` rest          |
+| `surface-soft`    | #f4f8fb | Default raised surface. Resting fill for chip-style controls and static raised regions.             | `icon-button-circle` rest, `search-input` rest, favorite cell rest                    |
+| `surface-strong`  | #edf2f6 | `:hover` escalation for chip-style controls. Static fixed-emphasis fill with no further escalation. | `icon-button-circle` hover, `search-input` hover, favorite cell hover, skeleton block |
+| `surface-pressed` | #e3eaef | `:active` (held-down) escalation. Ladder ceiling.                                                   | `icon-button-circle` active, `button-ghost` active                                    |
 
 | Rule                                                                                                             | Reason                                                                                                  |
 | ---------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
@@ -241,17 +241,17 @@ Favorite-card grids and the hourly strip use `gap-md` (16px); page sections use 
 
 Tokens generate `rounded-{token}` utilities. `rounded-none` and `rounded-full` are Tailwind built-ins.
 
-| Token  | px   | Use                                           |
-| ------ | ---- | --------------------------------------------- |
-| `none` | 0    | Reserved                                      |
-| `xs`   | 4    | Tag / badge                                   |
-| `sm`   | 6    | Small controls (matches source product)       |
-| `md`   | 8    | Buttons, inputs, cards (default — source app) |
-| `lg`   | 12   | Containers, favorite cards                    |
-| `xl`   | 16   | Modals, featured surfaces                     |
-| `full` | 9999 | Pills, search input, icon button, status pill |
+| Token  | px   | Use                                                    |
+| ------ | ---- | ------------------------------------------------------ |
+| `none` | 0    | Reserved                                               |
+| `xs`   | 4    | Tag / badge                                            |
+| `sm`   | 6    | Small controls (matches source product)                |
+| `md`   | 8    | Buttons, inputs, favorite cells (default — source app) |
+| `lg`   | 12   | Containers, sidebar panel                              |
+| `xl`   | 16   | Modals, featured surfaces                              |
+| `full` | 9999 | Pills, search input, icon button, status pill          |
 
-`md` (8px) is the default control radius (source product's `--radius: .5rem`); favorite cards step up to `lg` (12px) as 4px-step nesting.
+`md` (8px) is the default control radius (source product's `--radius: .5rem`); the sidebar panel steps up to `lg` (12px) as a container, and the favorite cells nested inside step back down to `md` — 4px-step nesting in each direction.
 
 ## 3.5. Elevation.
 
@@ -265,11 +265,11 @@ Shadow tokens `--shadow-raised`, `--shadow-hover`, `--shadow-floating` (utilitie
 | 3 (floating, rest) | `0 4px 10px rgb(0 0 0 / 0.06), 0 12px 24px rgb(0 0 0 / 0.10)` | `shadow-floating`        |
 | Modal scrim        | `scrim` at 50% opacity                                        | `bg-scrim/50`            |
 
-| Role              | Use                                                                                                                |
-| ----------------- | ------------------------------------------------------------------------------------------------------------------ |
-| `shadow-raised`   | Resting fill for favorite cards and content containers sitting above `page` without overlaying other content.      |
-| `shadow-hover`    | `:hover` escalation on raised or flat interactive surfaces (favorite cards, list rows). Composes over rest shadow. |
-| `shadow-floating` | Resting fill for overlay surfaces — the district search-results dropdown, popovers, menus (§ 5.3.).                |
+| Role              | Use                                                                                                                                         |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `shadow-raised`   | Resting fill for content containers sitting above `page` without overlaying other content — the sidebar panel and the hourly-forecast card. |
+| `shadow-hover`    | `:hover` escalation on raised interactive surfaces. Composes over rest shadow.                                                              |
+| `shadow-floating` | Resting fill for overlay surfaces — the district search-results dropdown, popovers, menus (§ 5.3.).                                         |
 
 `raised < hover < floating` (monotonic depth): hover must read deeper than a raised card's rest or pointer feedback is lost; floating must read deeper than hover or overlays merge with hovered cards.
 
@@ -413,17 +413,18 @@ Keyboard: ↑/↓ move `aria-selected`; Enter selects. The highlighted row uses 
 
 ## 5.4. Favorite Card.
 
-Feature composition; tokens only (full layout lives with the feature). Up to 6 per the PRD.
+Feature composition; tokens only (full layout lives with the feature). Up to 6 per the PRD. Favorite cards are inset cells nested inside the `canvas` sidebar panel, not raised cards floating on `page` — so they rest at `surface-soft` and read as recessed wells against the white panel (§ 3.1.4.), matching the reference's quiet location rows.
 
-| Property       | Spec                                                                     |
-| -------------- | ------------------------------------------------------------------------ |
-| Surface        | `canvas`, `rounded-lg`, `shadow-raised`, 1px `hairline`                  |
-| `:hover`       | `shadow-hover` (lifts to indicate click-through to detail)               |
-| Location alias | `title-md` `ink`; editable (rename) via `text-input` in a modal (§ 5.6.) |
-| Current temp   | `temp-lg` `ink`                                                          |
-| High / low     | `temp-sm`; high `ink`, low `meta`                                        |
-| Condition icon | lucide weather glyph, neutral `ink`/`meta` (§ 5.7.)                      |
-| Remove control | `icon-button-circle` with a `semantic-error` icon on `:hover`            |
+| Property       | Spec                                                                                                                                                     |
+| -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Surface        | `surface-soft`, `rounded-md`, 1px `hairline` (inset cell — no shadow; the enclosing sidebar panel carries the elevation)                                 |
+| `:hover`       | `bg-surface-strong` (chip ladder, § 3.1.4.; signals click-through to detail)                                                                             |
+| Selected       | `ring-2 ring-primary ring-inset` — the active location. This is the active-navigation marker, the sole `primary` selection exception (§ 3.1.1., § 6.2.). |
+| Location alias | `title-md` `ink`; editable (rename) via `text-input` in a modal (§ 5.6.)                                                                                 |
+| Current temp   | `temp-lg` `ink`                                                                                                                                          |
+| High / low     | `temp-sm`; high `ink`, low `meta`                                                                                                                        |
+| Condition icon | lucide weather glyph, neutral `ink`/`meta` (§ 5.7.)                                                                                                      |
+| Remove control | `icon-button-circle` with a `semantic-error` icon on `:hover`                                                                                            |
 
 ## 5.5. Empty State.
 
@@ -461,7 +462,7 @@ Weather state is conveyed by neutral icon + mono numerals only — no hue encodi
 - Use `primary` for primary-action affordances, links, focus rings, and the active-nav marker only (§ 3.1.1.).
 - Render every temperature and time with a `temp-*` / `num-mono` token; tabular numerals only (§ 3.2.3., § 3.2.4.).
 - Distinguish weather conditions by neutral icon (`ink`/`meta`) — never by color (§ 5.7.).
-- Use 1px `hairline` as default elevation; `shadow-raised` for favorite cards; `shadow-floating` for the search-results overlay and popovers (§ 3.5.).
+- Use 1px `hairline` as default elevation; `shadow-raised` for raised content containers (the sidebar panel, the hourly-forecast card); `shadow-floating` for the search-results overlay and popovers (§ 3.5.).
 - Reference colors via Tailwind utilities (`bg-*`, `text-*`, `border-*`) or `var(--color-*)` — never hard-code hex (§ 4.2.).
 - Hex literals are permitted ONLY inside CSS filter functions (`drop-shadow()`, `mask-*`, `backdrop-filter`) where the value is a compositor parameter; comment the waiver at its site.
 - Verify every new color token ≥ WCAG AA against `canvas` (#ffffff) (§ 4.1.).

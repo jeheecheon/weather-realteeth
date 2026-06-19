@@ -26,13 +26,13 @@ export function FavoriteCard({
   return (
     <div
       className={cn(
-        "relative rounded-lg border border-hairline bg-canvas shadow-raised transition-shadow hover:shadow-hover",
+        "relative rounded-md border border-hairline bg-surface-soft transition-colors hover:bg-surface-strong",
         isSelected && "ring-2 ring-primary ring-inset",
         className,
       )}
     >
       <button
-        className="flex w-full flex-col gap-sm rounded-lg p-md text-left outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-inset"
+        className="flex w-full flex-col gap-sm rounded-md p-md text-left outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-inset"
         type="button"
         onClick={onSelect}
       >
@@ -83,13 +83,13 @@ export function FavoriteCardError({
   return (
     <div
       className={cn(
-        "relative rounded-lg border border-hairline bg-canvas shadow-raised transition-shadow hover:shadow-hover",
+        "relative rounded-md border border-hairline bg-surface-soft transition-colors hover:bg-surface-strong",
         isSelected && "ring-2 ring-primary ring-inset",
         className,
       )}
     >
       <button
-        className="flex w-full flex-col gap-sm rounded-lg p-md text-left outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-inset"
+        className="flex w-full flex-col gap-sm rounded-md p-md text-left outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-inset"
         type="button"
         onClick={onSelect}
       >
@@ -110,9 +110,7 @@ type FavoriteCardSkeletonProps = {
 
 export function FavoriteCardSkeleton({ className }: FavoriteCardSkeletonProps) {
   return (
-    <div
-      className={cn("rounded-lg border border-hairline bg-canvas p-md shadow-raised", className)}
-    >
+    <div className={cn("rounded-md border border-hairline bg-surface-soft p-md", className)}>
       <div className="flex flex-col gap-sm">
         <Skeleton className="h-6 w-28 rounded-md" />
         <div className="flex items-end justify-between gap-sm">

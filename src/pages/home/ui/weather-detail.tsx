@@ -37,35 +37,22 @@ export function WeatherDetail({
     <main className={cn("flex min-h-[720px] flex-col gap-lg", className)}>
       <WeatherDetailHeader district={district} onToggleFavorites={onToggleFavorites} />
 
-      <section className="flex flex-1 flex-col gap-xl rounded-xl border border-hairline bg-canvas p-lg shadow-raised md:p-xl">
-        <div className="flex flex-1 flex-col gap-xl">
-          <div className="flex flex-col gap-lg md:flex-row md:items-start md:justify-between">
-            <div className="flex flex-col gap-sm">
-              <div>
-                <p className="text-title-sm text-meta">
-                  {district ? "선택한 장소" : "감지된 위치"}
-                </p>
-                <h1 className="mt-2xs text-display-xl text-ink">{placeName}</h1>
-              </div>
-              <div className="flex items-center gap-md">
-                <condition.Icon className="size-10 text-ink" />
-                <span className="text-title-md text-body">{condition.label}</span>
-              </div>
-            </div>
-
-            <div className="flex flex-col items-start gap-sm md:items-end">
-              <p className="text-temp-hero text-ink">
-                {Math.round(weather.data.current.temperature)}°
-              </p>
-              <div className="flex gap-md">
-                <TemperatureLabel label="최고" value={weather.data.daily.max} />
-                <TemperatureLabel label="최저" value={weather.data.daily.min} muted />
-              </div>
-            </div>
+      <section className="flex flex-1 flex-col gap-xl">
+        <div className="flex flex-col items-center gap-md text-center">
+          <p className="text-title-sm text-meta">{district ? "선택한 장소" : "감지된 위치"}</p>
+          <h1 className="text-display-xl text-ink">{placeName}</h1>
+          <p className="text-temp-hero text-ink">{Math.round(weather.data.current.temperature)}°</p>
+          <div className="flex items-center gap-xs">
+            <condition.Icon className="size-6 text-ink" />
+            <span className="text-title-md text-body">{condition.label}</span>
           </div>
-
-          <HourlyForecast hourlyForecast={hourlyForecast} />
+          <div className="flex gap-md">
+            <TemperatureLabel label="최고" value={weather.data.daily.max} />
+            <TemperatureLabel label="최저" value={weather.data.daily.min} muted />
+          </div>
         </div>
+
+        <HourlyForecast hourlyForecast={hourlyForecast} />
       </section>
     </main>
   );
@@ -120,26 +107,18 @@ export function WeatherDetailSkeleton({ className }: WeatherDetailSkeletonProps)
         <Skeleton className="h-5 w-28 rounded-md" />
       </div>
 
-      <div className="flex flex-1 flex-col gap-xl rounded-xl border border-hairline bg-canvas p-lg shadow-raised md:p-xl">
-        <div className="flex flex-col gap-lg md:flex-row md:items-start md:justify-between">
-          <div className="flex flex-col gap-sm">
-            <Skeleton className="h-5 w-20 rounded-md" />
-            <Skeleton className="h-12 w-48 rounded-md" />
-            <div className="flex items-center gap-md">
-              <Skeleton className="size-10 rounded-full" />
-              <Skeleton className="h-6 w-24 rounded-md" />
-            </div>
-          </div>
-
-          <div className="flex flex-col items-start gap-sm md:items-end">
-            <Skeleton className="h-20 w-32 rounded-md" />
-            <Skeleton className="h-6 w-40 rounded-md" />
-          </div>
+      <div className="flex flex-1 flex-col gap-xl">
+        <div className="flex flex-col items-center gap-md">
+          <Skeleton className="h-5 w-20 rounded-md" />
+          <Skeleton className="h-10 w-44 rounded-md" />
+          <Skeleton className="h-16 w-32 rounded-md" />
+          <Skeleton className="h-6 w-24 rounded-md" />
+          <Skeleton className="h-6 w-40 rounded-md" />
         </div>
 
-        <div className="flex flex-col gap-md">
+        <div className="flex flex-col gap-md rounded-lg border border-hairline bg-canvas p-lg shadow-raised">
           <Skeleton className="h-8 w-32 rounded-md" />
-          <div className="flex gap-sm overflow-hidden rounded-lg border border-hairline bg-surface-soft p-sm">
+          <div className="flex gap-sm overflow-hidden">
             {Array.from({ length: HOURLY_FORECAST_LIMIT }).map((_, index) => (
               <Skeleton key={index} className="h-24 w-20 shrink-0 rounded-md" />
             ))}
@@ -157,12 +136,10 @@ type WeatherDetailErrorProps = {
 export function WeatherDetailError({ className }: WeatherDetailErrorProps) {
   return (
     <main className={cn("flex min-h-[720px] flex-col gap-lg", className)}>
-      <section className="flex flex-1 flex-col gap-xl rounded-xl border border-hairline bg-canvas p-lg shadow-raised md:p-xl">
-        <WeatherMessage
-          title="날씨 정보를 가져오지 못했습니다."
-          description="잠시 후 다시 시도해 주세요."
-        />
-      </section>
+      <WeatherMessage
+        title="날씨 정보를 가져오지 못했습니다."
+        description="잠시 후 다시 시도해 주세요."
+      />
     </main>
   );
 }
@@ -212,9 +189,14 @@ type HourlyForecastProps = {
 
 function HourlyForecast({ className, hourlyForecast }: HourlyForecastProps) {
   return (
-    <section className={cn("flex flex-col gap-md", className)}>
+    <section
+      className={cn(
+        "flex flex-col gap-md rounded-lg border border-hairline bg-canvas p-lg shadow-raised",
+        className,
+      )}
+    >
       <h2 className="text-display-sm text-ink">시간별 예보</h2>
-      <div className="overflow-x-auto rounded-lg border border-hairline bg-surface-soft p-sm">
+      <div className="overflow-x-auto">
         <div className="flex min-w-max gap-sm">
           {hourlyForecast.map((hour) => {
             const date = new Date(hour.time);
@@ -222,7 +204,7 @@ function HourlyForecast({ className, hourlyForecast }: HourlyForecastProps) {
             return (
               <div
                 key={hour.time}
-                className="flex w-20 shrink-0 flex-col items-center gap-xs rounded-md bg-canvas p-sm"
+                className="flex w-20 shrink-0 flex-col items-center gap-xs rounded-md bg-surface-soft p-sm"
               >
                 <span className="text-num-mono text-meta">
                   {date.toLocaleTimeString("ko-KR", { hour: "2-digit" })}
