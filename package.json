@@ -5,6 +5,7 @@
   "type": "module",
   "packageManager": "pnpm@10.28.0",
   "scripts": {
+    "preinstall": "npx only-allow pnpm",
     "dev": "concurrently -n app,steiger -c blue,yellow \"pnpm dev:app\" \"pnpm dev:steiger\"",
     "dev:app": "vite",
     "dev:steiger": "steiger ./src --watch",
