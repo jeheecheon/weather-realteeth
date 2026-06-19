@@ -52,7 +52,7 @@ export function ComboboxContent({
       >
         <ComboboxPrimitive.Popup
           className={cn(
-            "max-h-80 w-(--anchor-width) max-w-(--available-width) overflow-hidden rounded-lg border border-hairline bg-canvas shadow-floating outline-none data-closed:animate-out data-closed:fade-out-0 data-open:animate-in data-open:fade-in-0",
+            "flex max-h-[min(20rem,var(--available-height))] w-(--anchor-width) max-w-(--available-width) flex-col overflow-hidden rounded-lg border border-hairline bg-canvas shadow-floating outline-none data-closed:animate-out data-closed:fade-out-0 data-open:animate-in data-open:fade-in-0",
             className,
           )}
           {...props}
@@ -69,7 +69,7 @@ type ComboboxListProps = ComponentProps<typeof ComboboxPrimitive.List> & {
 export function ComboboxList({ className, ...props }: ComboboxListProps) {
   return (
     <ComboboxPrimitive.List
-      className={cn("max-h-80 overflow-y-auto py-2xs", className)}
+      className={cn("min-h-0 flex-1 overflow-y-auto py-2xs", className)}
       {...props}
     />
   );
@@ -96,10 +96,5 @@ type ComboboxEmptyProps = ComponentProps<typeof ComboboxPrimitive.Empty> & {
 };
 
 export function ComboboxEmpty({ className, ...props }: ComboboxEmptyProps) {
-  return (
-    <ComboboxPrimitive.Empty
-      className={cn("px-md py-sm text-body-sm text-meta", className)}
-      {...props}
-    />
-  );
+  return <ComboboxPrimitive.Empty className={cn("text-body-sm text-meta", className)} {...props} />;
 }
