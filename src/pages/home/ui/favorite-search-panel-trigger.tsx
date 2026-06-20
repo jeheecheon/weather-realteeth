@@ -37,6 +37,7 @@ export function FavoriteSearchPanelTrigger({
             variant="search"
             placeholder="장소 검색"
             value={query}
+            autoFocus
             onChange={handleQueryChange}
           />
 
