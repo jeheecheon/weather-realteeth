@@ -49,6 +49,7 @@ export function HomePage({ className }: HomePageProps) {
               <WeatherDetail
                 coordinates={coordinates}
                 activeDistrict={activeDistrict}
+                isFavoritePanelOpen={isFavoritesPanelOpen}
                 onFavoritePanelToggle={handleIsFavoritesPanelOpenChange(!isFavoritesPanelOpen)}
               />
             </Suspense>

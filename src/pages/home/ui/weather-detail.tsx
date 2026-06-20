@@ -16,6 +16,7 @@ type WeatherDetailProps = {
   className?: string;
   coordinates: Coordinates;
   activeDistrict: Nullable<District>;
+  isFavoritePanelOpen: boolean;
   onFavoritePanelToggle: () => void;
 };
 
@@ -25,6 +26,7 @@ export function WeatherDetail({
   className,
   coordinates,
   activeDistrict,
+  isFavoritePanelOpen,
   onFavoritePanelToggle,
 }: WeatherDetailProps) {
   const weather = useWeather(coordinates);
@@ -41,7 +43,7 @@ export function WeatherDetail({
     weather.data.current.isDay,
   );
   const favorite = favorites.find((item) => item.name === district.name);
-  const isFavorite = favorite != null;
+  const isFavorited = favorite != null;
   const placeName = favorite?.alias ?? district.name;
 
   return (
@@ -63,7 +65,8 @@ export function WeatherDetail({
       >
         <WeatherDetailHeader
           className="relative z-10"
-          isFavorite={isFavorite}
+          isFavorited={isFavorited}
+          isFavoritePanelOpen={isFavoritePanelOpen}
           onFavoritePanelToggle={onFavoritePanelToggle}
           onFavoriteToggle={handleFavoriteToggle}
         />
