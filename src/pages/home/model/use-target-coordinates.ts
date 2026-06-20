@@ -15,7 +15,7 @@ export function useTargetCoordinates(district: Nullable<District>): Nullable<Coo
       return;
     }
 
-    toast.error("현재 위치를 확인할 수 없어요.\n위치 권한을 허용한 뒤 다시 시도해 주세요.", {
+    toast("현재 위치를 확인할 수 없어요.\n위치 권한을 허용해주세요.", {
       id: "geolocation-error",
       duration: 5 * A_SECOND,
     });
