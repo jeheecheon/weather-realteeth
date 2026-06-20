@@ -17,8 +17,6 @@ import { resolveWeatherCondition } from "../lib/weather-code";
 import type { CurrentWeather, DailyWeather, HourlyWeather, TodayWeather } from "../model/weather";
 import { WeatherTile } from "./weather-tile";
 
-const WEEKDAY_LABELS = ["일", "월", "화", "수", "목", "금", "토"];
-
 type HourlyForecastTileProps = {
   className?: string;
   hourly: HourlyWeather[];
@@ -60,6 +58,19 @@ export function HourlyForecastTile({ className, hourly }: HourlyForecastTileProp
       </div>
     </WeatherTile>
   );
+
+  function formatHour(time: string): string {
+    return `${new Date(time).getHours()}시`;
+  }
+
+  function isSameHour(a: Date, b: Date): boolean {
+    return (
+      a.getFullYear() === b.getFullYear() &&
+      a.getMonth() === b.getMonth() &&
+      a.getDate() === b.getDate() &&
+      a.getHours() === b.getHours()
+    );
+  }
 }
 
 type WeeklyForecastTileProps = {
@@ -89,6 +100,15 @@ export function WeeklyForecastTile({ className, daily }: WeeklyForecastTileProps
       })}
     </WeatherTile>
   );
+
+  function formatWeekday(date: string, index: number): string {
+    if (index === 0) {
+      return "오늘";
+    }
+
+    const WEEKDAY_LABELS = ["일", "월", "화", "수", "목", "금", "토"];
+    return WEEKDAY_LABELS[new Date(date).getDay()] ?? "";
+  }
 }
 
 type WeatherMetricTilesProps = {
@@ -164,64 +184,43 @@ export function WeatherMetricTiles({ current, today }: WeatherMetricTilesProps) 
       </WeatherTile>
     </>
   );
-}
 
-function formatHour(time: string): string {
-  return `${new Date(time).getHours()}시`;
-}
+  function formatTime(time: string): string {
+    const date = new Date(time);
+    return `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
+  }
 
-function isSameHour(a: Date, b: Date): boolean {
-  return (
-    a.getFullYear() === b.getFullYear() &&
-    a.getMonth() === b.getMonth() &&
-    a.getDate() === b.getDate() &&
-    a.getHours() === b.getHours()
-  );
-}
+  function resolveWindDirection(degrees: number): string {
+    const WIND_DIRECTIONS = ["북", "북동", "동", "남동", "남", "남서", "서", "북서"];
+    return WIND_DIRECTIONS[Math.round(degrees / 45) % 8] ?? "";
+  }
 
-function formatTime(time: string): string {
-  const date = new Date(time);
-  return `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
-}
+  function resolveVisibilityLabel(visibility: number): string {
+    if (visibility >= 10000) {
+      return "매우 좋음";
+    }
+    if (visibility >= 4000) {
+      return "좋음";
+    }
+    if (visibility >= 1000) {
+      return "보통";
+    }
+    return "나쁨";
+  }
 
-function formatWeekday(date: string, index: number): string {
-  if (index === 0) {
-    return "오늘";
+  function resolveUvLabel(uvIndex: number): string {
+    if (uvIndex <= 2) {
+      return "낮음";
+    }
+    if (uvIndex <= 5) {
+      return "보통";
+    }
+    if (uvIndex <= 7) {
+      return "높음";
+    }
+    if (uvIndex <= 10) {
+      return "매우 높음";
+    }
+    return "위험";
   }
-  return WEEKDAY_LABELS[new Date(date).getDay()] ?? "";
-}
-
-const WIND_DIRECTIONS = ["북", "북동", "동", "남동", "남", "남서", "서", "북서"];
-
-function resolveWindDirection(degrees: number): string {
-  return WIND_DIRECTIONS[Math.round(degrees / 45) % 8] ?? "";
-}
-
-function resolveVisibilityLabel(visibility: number): string {
-  if (visibility >= 10000) {
-    return "매우 좋음";
-  }
-  if (visibility >= 4000) {
-    return "좋음";
-  }
-  if (visibility >= 1000) {
-    return "보통";
-  }
-  return "나쁨";
-}
-
-function resolveUvLabel(uvIndex: number): string {
-  if (uvIndex <= 2) {
-    return "낮음";
-  }
-  if (uvIndex <= 5) {
-    return "보통";
-  }
-  if (uvIndex <= 7) {
-    return "높음";
-  }
-  if (uvIndex <= 10) {
-    return "매우 높음";
-  }
-  return "위험";
 }
