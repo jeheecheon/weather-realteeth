@@ -1,5 +1,6 @@
 import { cn, type Nullable } from "@/shared/lib";
 import { Skeleton } from "@/shared/ui";
+import { Portal as PortalPrimitive } from "radix-ui";
 import { useMemo } from "react";
 import { useWeather } from "../api/use-weather";
 import { resolveWeatherCondition } from "../lib/weather-code";
@@ -45,11 +46,13 @@ export function WeatherDetail({
 
   return (
     <>
-      <WeatherBackground
-        className="fixed inset-0 overflow-hidden"
-        isDay={weather.data.current.isDay}
-        weatherCode={weather.data.current.weatherCode}
-      />
+      <PortalPrimitive.Root>
+        <WeatherBackground
+          className="absolute inset-0 -z-10 overflow-hidden"
+          isDay={weather.data.current.isDay}
+          weatherCode={weather.data.current.weatherCode}
+        />
+      </PortalPrimitive.Root>
 
       <main
         className={cn(
