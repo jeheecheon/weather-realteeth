@@ -7,6 +7,7 @@ type BottomSheetProps = PropsWithChildren<{
   headerClassName?: string;
   isOpen: boolean;
   title: string;
+  autoFocus?: boolean;
   onClose: () => void;
   onOpenAutoFocus?: (event: Event) => void;
 }>;
@@ -16,6 +17,7 @@ export function BottomSheet({
   headerClassName,
   isOpen,
   title,
+  autoFocus,
   children,
   onClose,
   onOpenAutoFocus,
@@ -27,7 +29,12 @@ export function BottomSheet({
   };
 
   return (
-    <Drawer autoFocus repositionInputs={false} open={isOpen} onOpenChange={handleOpenChange}>
+    <Drawer
+      repositionInputs={false}
+      open={isOpen}
+      autoFocus={autoFocus}
+      onOpenChange={handleOpenChange}
+    >
       <DrawerContent className={cn("pb-xl", className)} onOpenAutoFocus={onOpenAutoFocus}>
         <DrawerHeader className={headerClassName}>
           <DrawerTitle>{title}</DrawerTitle>

@@ -30,6 +30,7 @@ export function FavoriteSearchPanelTrigger({
         className="data-[vaul-drawer-direction=bottom]:h-[90vh] data-[vaul-drawer-direction=bottom]:max-h-[90vh]"
         isOpen={isOpen}
         title="장소 검색"
+        autoFocus
         onClose={handleSheetClose}
       >
         <div className="flex min-h-0 flex-1 flex-col gap-md">
