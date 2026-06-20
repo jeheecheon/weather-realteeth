@@ -120,15 +120,15 @@ The token name is `meta`, not `muted`, to avoid colliding with shadcn's `--color
 
 Backdrop tokens are not UI accents. They are low-opacity background atmosphere colors used only by the fixed page backdrop layer (§ 5.8.).
 
-| Token                | Hex     | Use                              |
-| -------------------- | ------- | -------------------------------- |
-| `backdrop-clear`     | #d9f2fb | Clear / mostly clear atmosphere  |
-| `backdrop-cloudy`    | #c6d3dc | Cloudy atmosphere                |
-| `backdrop-rain`      | #9fb1bd | Rain / drizzle atmosphere        |
-| `backdrop-snow`      | #edf8fb | Snow atmosphere                  |
-| `backdrop-fog`       | #dce5ea | Fog atmosphere                   |
-| `backdrop-thunder`   | #9aa8b5 | Thunder atmosphere               |
-| `backdrop-night`     | #8fa0ad | Night atmosphere, still light UI |
+| Token              | Hex     | Use                              |
+| ------------------ | ------- | -------------------------------- |
+| `backdrop-clear`   | #d9f2fb | Clear / mostly clear atmosphere  |
+| `backdrop-cloudy`  | #c6d3dc | Cloudy atmosphere                |
+| `backdrop-rain`    | #9fb1bd | Rain / drizzle atmosphere        |
+| `backdrop-snow`    | #edf8fb | Snow atmosphere                  |
+| `backdrop-fog`     | #dce5ea | Fog atmosphere                   |
+| `backdrop-thunder` | #9aa8b5 | Thunder atmosphere               |
+| `backdrop-night`   | #8fa0ad | Night atmosphere, still light UI |
 
 ### 3.1.4. Semantic.
 
@@ -255,8 +255,8 @@ Favorite-card grids and the hourly strip use `gap-md` (16px); page sections use 
 
 Tokens generate `rounded-{token}` utilities. `rounded-none` and `rounded-full` are Tailwind built-ins.
 
-| Token  | px   | Use                                                    |
-| ------ | ---- | ------------------------------------------------------ |
+| Token  | px   | Use                                           |
+| ------ | ---- | --------------------------------------------- |
 | `none` | 0    | Reserved                                      |
 | `xs`   | 6    | Tag / badge, skeleton details                 |
 | `sm`   | 8    | Small controls                                |
@@ -462,26 +462,26 @@ No size beyond `lg`. A surface needing more horizontal space is a page, not a mo
 
 Weather state is conveyed by neutral icon + mono numerals only — no hue encoding (§ 2.2., § 3.2.4.).
 
-| Element             | Spec                                                                                                          |
-| ------------------- | ------------------------------------------------------------------------------------------------------------- |
-| Condition icon      | lucide glyph (`sun`, `cloud`, `cloud-rain`, `cloud-snow`, `cloud-lightning`, `cloud-fog`, `moon`, …) in `ink` |
+| Element             | Spec                                                                                                                                                                                   |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Condition icon      | lucide glyph (`sun`, `cloud`, `cloud-rain`, `cloud-snow`, `cloud-lightning`, `cloud-fog`, `moon`, …) in `ink`                                                                          |
 | Day vs night        | Swap glyph only (`sun` ↔ `moon`, `cloud-sun` ↔ `cloud-moon`); never swap canvas/accent (§ 4.1.). The page-level atmospheric backdrop MAY change softly by rendered condition (§ 5.8.). |
-| Current temp        | `temp-hero` (detail) / `temp-lg` (card), `ink`                                                                |
-| High / low pair     | `temp-sm`; high `ink`, low `meta`; label with `title-sm` (최고 / 최저)                                        |
-| Hourly strip        | Per-hour: `num-mono` hour label (`meta`), neutral condition icon, `temp-md` temperature (`ink`)               |
-| Severe-weather note | `semantic-warning` (caution) or `semantic-error` (danger) banner using its `-soft` fill — never a new accent  |
+| Current temp        | `temp-hero` (detail) / `temp-lg` (card), `ink`                                                                                                                                         |
+| High / low pair     | `temp-sm`; high `ink`, low `meta`; label with `title-sm` (최고 / 최저)                                                                                                                 |
+| Hourly strip        | Per-hour: `num-mono` hour label (`meta`), neutral condition icon, `temp-md` temperature (`ink`)                                                                                        |
+| Severe-weather note | `semantic-warning` (caution) or `semantic-error` (danger) banner using its `-soft` fill — never a new accent                                                                           |
 
 ## 5.8. Atmospheric Backdrop.
 
 The app MAY use a page-level background atmosphere layer behind all UI. This layer exists to bring the Apple Weather reference's environmental depth into the app without turning weather data into colored UI states.
 
-| Property | Spec |
-| --- | --- |
-| Scope | Fixed background only, behind the app shell. Never inside cards, icons, controls, charts, or text. |
-| Strength | Subtle: low-opacity overlays that preserve the light theme and keep all foreground surfaces readable. |
+| Property          | Spec                                                                                                                                                              |
+| ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Scope             | Fixed background only, behind the app shell. Never inside cards, icons, controls, charts, or text.                                                                |
+| Strength          | Subtle: low-opacity overlays that preserve the light theme and keep all foreground surfaces readable.                                                             |
 | Condition mapping | Allowed for broad weather families (clear, cloudy, rain, snow, fog, thunder, night) only. Do not encode exact temperature, UV, AQI, severity, or forecast values. |
-| Top gradient | A shallow top readability gradient is allowed, approximately the top 15% of the viewport. |
-| Foreground rule | Cards, favorite items, data values, icons, selection states, and alerts continue to use § 3 tokens and § 5.7 weather display rules. |
+| Top gradient      | A shallow top readability gradient is allowed, approximately the top 15% of the viewport.                                                                         |
+| Foreground rule   | Cards, favorite items, data values, icons, selection states, and alerts continue to use § 3 tokens and § 5.7 weather display rules.                               |
 
 Atmospheric backdrop gradients are the only permitted background-gradient exception. They are not component gradients, chart gradients, temperature scales, condition-colored icons, or alternate themes.
 
